@@ -118,6 +118,11 @@ export default function History({ auth, orders }) {
                                             <div className="mt-3 text-lg font-bold text-gray-900">{order.total_pages} Lembar · {order.print_type === 'bw' ? 'Hitam Putih' : 'Warna'}</div>
                                             <p className="mt-2 text-sm text-gray-600">{order.paper_size} · {order.delivery_slot === 'subuh' ? 'Subuh (05:30-07:30)' : 'Sore (15:00-17:00)'}</p>
                                             <p className="mt-2 text-sm text-gray-600">{order.is_bound ? 'Jilid Softcover ditambahkan' : 'Tanpa jilid'}</p>
+                                            {order.description && (
+                                                <p className="mt-3 rounded-3xl bg-gray-50 p-4 text-sm text-gray-700 border border-gray-200">
+                                                    {order.description.length > 180 ? `${order.description.substring(0, 180)}...` : order.description}
+                                                </p>
+                                            )}
                                         </div>
                                         <div className="flex flex-col items-start gap-3 sm:items-end">
                                             <span className={`rounded-full border px-4 py-2 text-xs font-semibold ${getStatusStyle(order.status)}`}>{getStatusText(order.status)}</span>

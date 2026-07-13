@@ -16,6 +16,7 @@ class Order extends Model
         'paper_size',
         'print_type',
         'total_pages',
+        'description',
         'total_price',
         'delivery_slot',
         'status',

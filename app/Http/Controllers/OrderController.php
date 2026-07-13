@@ -43,12 +43,21 @@ class OrderController extends Controller
         $request->validate([
             'document'      => 'required|mimes:pdf|max:10240',
             'total_pages'   => 'required|integer|min:1',
+            'description'   => 'nullable|string|max:1200',
             'print_type'    => 'required|in:bw,color',
             'paper_size'    => 'required|in:A4,F4',
             'delivery_slot' => 'required|in:subuh,sore',
             'total_price'   => 'required|numeric',
             'is_bound'      => 'boolean',
         ]);
+
+        $description = trim($request->description ?? '');
+        if ($description !== '') {
+            $wordCount = count(preg_split('/\s+/', $description, -1, PREG_SPLIT_NO_EMPTY));
+            if ($wordCount > 30) {
+                return back()->withErrors(['description' => 'Deskripsi maksimal 30 kata.'])->withInput();
+            }
+        }
 
         // Validasi Keamanan Backend: Cek ulang kuota sebelum menyimpan
         $dailyPageLimit    = 500;
@@ -68,6 +77,7 @@ class OrderController extends Controller
             'paper_size'    => $request->paper_size,
             'print_type'    => $request->print_type,
             'total_pages'   => $request->total_pages,
+            'description'   => $request->description,
             'is_bound'      => $request->is_bound ?? false,
             'total_price'   => $request->total_price,
             'delivery_slot' => $request->delivery_slot,

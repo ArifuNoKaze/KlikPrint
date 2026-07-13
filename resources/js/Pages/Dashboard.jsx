@@ -9,11 +9,34 @@ export default function Dashboard({ auth, isCapped, remainingPages, totalOrders 
         print_type: "bw",
         total_pages: 1,
         delivery_slot: "subuh",
+        description: "",
         is_bound: false,
         total_price: 500,
     });
 
     const [previewName, setPreviewName] = useState("");
+
+    const currencyFormat = (value) => new Intl.NumberFormat("id-ID").format(value);
+
+    const getWordCount = (text) => {
+        const trimmed = text.trim();
+        return trimmed ? trimmed.split(/\s+/).length : 0;
+    };
+
+    const descriptionWordCount = getWordCount(data.description);
+
+    const handleDescriptionChange = (e) => {
+        const value = e.target.value;
+        const normalized = value.replace(/\s+/g, " ");
+        const words = normalized.trim().split(" ").filter(Boolean);
+
+        if (words.length <= 150) {
+            setData("description", value);
+            return;
+        }
+
+        setData("description", words.slice(0, 150).join(" ") + " ");
+    };
 
     useEffect(() => {
         const pricePerPage = data.print_type === "bw" ? 500 : 1200;
@@ -77,44 +100,69 @@ export default function Dashboard({ auth, isCapped, remainingPages, totalOrders 
                     </div>
 
                     {/* Quick Stats */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-gray-600 text-sm font-semibold mb-1">
-                                        Total Pesanan
-                                    </p>
-                                    <p className="text-4xl font-black text-gray-900">
-                                        {totalOrders}
-                                    </p>
+                    <div className="grid gap-6 xl:grid-cols-[2fr,1fr] mb-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xs uppercase tracking-[0.3em] text-gray-500">Total Pesanan</p>
+                                        <p className="mt-4 text-4xl font-extrabold text-gray-900">{totalOrders}</p>
+                                    </div>
+                                    {/* <div className="text-5xl">📋</div> */}
                                 </div>
-                                <div className="text-5xl opacity-20">📋</div>
+                                <p className="mt-4 text-sm text-gray-500">Semua pesanan yang sudah kamu buat.</p>
+                            </div>
+                            <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xs uppercase tracking-[0.3em] text-gray-500">Total Penghematan</p>
+                                        <p className="mt-4 text-4xl font-extrabold text-emerald-600">Rp{currencyFormat(totalSavings)}</p>
+                                    </div>
+                                    {/* <div className="text-5xl">💰</div> */}
+                                </div>
+                                <p className="mt-4 text-sm text-gray-500">Angka ini menunjukkan estimasi hematmu.</p>
+                            </div>
+                            <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xs uppercase tracking-[0.3em] text-gray-500">Status Terbaru</p>
+                                        <p className="mt-4 text-3xl font-extrabold text-orange-600">{latestStatusText}</p>
+                                    </div>
+                                    {/* <div className="text-5xl">⏱️</div> */}
+                                </div>
+                                <p className="mt-4 text-sm text-gray-500">Pesanan terbaru kamu saat ini.</p>
                             </div>
                         </div>
-                        <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition">
-                            <div className="flex items-center justify-between">
+
+                        <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 to-green-700 p-6 text-white shadow-lg">
+                            <div className="flex items-center justify-between gap-4">
                                 <div>
-                                    <p className="text-gray-600 text-sm font-semibold mb-1">
-                                        Total Penghematan
-                                    </p>
-                                    <p className="text-4xl font-black text-green-600">
-                                        Rp{new Intl.NumberFormat('id-ID').format(totalSavings)}
-                                    </p>
+                                    <p className="text-sm uppercase tracking-[0.3em] text-emerald-200">Ringkasan Pesanan</p>
+                                    <h3 className="mt-4 text-3xl font-black">Preview pesananmu</h3>
                                 </div>
-                                <div className="text-5xl opacity-20">💰</div>
+                                <span className="rounded-full bg-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white">Realtime</span>
                             </div>
-                        </div>
-                        <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-gray-600 text-sm font-semibold mb-1">
-                                        Status Pesanan
-                                    </p>
-                                    <p className="text-xl font-bold text-orange-600">
-                                        {latestStatusText}
-                                    </p>
+                            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                                <div className="rounded-3xl bg-white/10 p-4">
+                                    <p className="text-xs uppercase tracking-[0.3em] text-emerald-100">Tipe Cetak</p>
+                                    <p className="mt-2 text-lg font-semibold">{data.print_type === 'bw' ? 'Hitam Putih' : 'Warna'}</p>
                                 </div>
-                                <div className="text-5xl opacity-20">⏱️</div>
+                                <div className="rounded-3xl bg-white/10 p-4">
+                                    <p className="text-xs uppercase tracking-[0.3em] text-emerald-100">Ukuran</p>
+                                    <p className="mt-2 text-lg font-semibold">{data.paper_size}</p>
+                                </div>
+                                <div className="rounded-3xl bg-white/10 p-4">
+                                    <p className="text-xs uppercase tracking-[0.3em] text-emerald-100">Halaman</p>
+                                    <p className="mt-2 text-lg font-semibold">{data.total_pages}</p>
+                                </div>
+                                <div className="rounded-3xl bg-white/10 p-4">
+                                    <p className="text-xs uppercase tracking-[0.3em] text-emerald-100">Jilid</p>
+                                    <p className="mt-2 text-lg font-semibold">{data.is_bound ? 'Softcover' : 'Tanpa jilid'}</p>
+                                </div>
+                            </div>
+                            <div className="mt-8 rounded-3xl bg-white/10 p-5">
+                                <p className="text-xs uppercase tracking-[0.3em] text-emerald-100">Total Estimasi</p>
+                                <p className="mt-2 text-3xl font-black">Rp{currencyFormat(data.total_price)}</p>
                             </div>
                         </div>
                     </div>
@@ -207,6 +255,40 @@ export default function Dashboard({ auth, isCapped, remainingPages, totalOrders 
                                 {errors.document && (
                                     <div className="text-red-500 text-sm mt-3 font-semibold">
                                         ⚠️ {errors.document}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="border-l-4 border-green-500 pl-6 bg-white rounded-3xl border border-green-100 p-6 shadow-sm">
+                                <div className="flex items-center mb-4">
+                                    <div className="bg-green-100 text-green-700 rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg mr-3">
+                                        ✍️
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-gray-900">
+                                            Deskripsi Pesanan
+                                        </h3>
+                                        <p className="text-sm text-gray-500">
+                                            Tambahkan instruksi cetak atau informasi khusus. Maksimal 150 kata.
+                                        </p>
+                                    </div>
+                                </div>
+                                <textarea
+                                    rows="5"
+                                    className="w-full rounded-2xl border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 px-4 py-3 text-sm text-gray-900 resize-none transition"
+                                    value={data.description}
+                                    onChange={handleDescriptionChange}
+                                    placeholder="Contoh: Mohon cetak bolak-balik, gunakan margin 2 cm, dan rapikan halaman daftar isi."
+                                />
+                                <div className="mt-3 flex items-center justify-between text-sm">
+                                    <span className="text-gray-500">Opsional, cukup 30 kata.</span>
+                                    <span className={descriptionWordCount > 30 ? "text-red-600 font-semibold" : "text-gray-500"}>
+                                        {descriptionWordCount}/30 kata
+                                    </span>
+                                </div>
+                                {errors.description && (
+                                    <div className="text-red-500 text-sm mt-3 font-semibold">
+                                        ⚠️ {errors.description}
                                     </div>
                                 )}
                             </div>
