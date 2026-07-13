@@ -132,16 +132,16 @@ export default function Welcome({ auth }) {
                         <p className="text-center text-gray-600 font-semibold mb-8">Dipercaya oleh mahasiswa dari universitas terkemuka</p>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-center">
                             <div className="text-center opacity-60 hover:opacity-100 transition">
-                                <div className="font-black text-2xl text-gray-400">ITB</div>
+                                <div className="font-black text-2xl text-gray-400">STIMIK</div>
                             </div>
                             <div className="text-center opacity-60 hover:opacity-100 transition">
-                                <div className="font-black text-2xl text-gray-400">UI</div>
+                                <div className="font-black text-2xl text-gray-400">UINDK</div>
                             </div>
                             <div className="text-center opacity-60 hover:opacity-100 transition">
-                                <div className="font-black text-2xl text-gray-400">UNPAD</div>
+                                <div className="font-black text-2xl text-gray-400">UNTAD</div>
                             </div>
                             <div className="text-center opacity-60 hover:opacity-100 transition">
-                                <div className="font-black text-2xl text-gray-400">USU</div>
+                                <div className="font-black text-2xl text-gray-400">UNISA</div>
                             </div>
                         </div>
                     </div>
@@ -157,42 +157,54 @@ export default function Welcome({ auth }) {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {/* Feature 1 */}
                         <div className="group bg-white p-8 rounded-2xl border border-gray-200 hover:border-green-300 hover:shadow-lg transition">
-                            <div className="text-5xl mb-4 group-hover:scale-110 transition transform">⏰</div>
+                            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-50 text-green-600 group-hover:scale-110 transition transform">
+                                <img src="https://img.icons8.com/ios-filled/48/16a34a/alarm-clock.png" alt="clock" className="h-8 w-8" />
+                            </div>
                             <h3 className="text-xl font-bold mb-2">Midnight Service</h3>
                             <p className="text-gray-600">Terima pesanan mulai tengah malam hingga pagi hari. Kami kerja saat orang lain tidur.</p>
                         </div>
 
                         {/* Feature 2 */}
                         <div className="group bg-white p-8 rounded-2xl border border-gray-200 hover:border-green-300 hover:shadow-lg transition">
-                            <div className="text-5xl mb-4 group-hover:scale-110 transition transform">🚀</div>
+                            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-50 text-green-600 group-hover:scale-110 transition transform">
+                                <img src="https://img.icons8.com/ios-filled/48/16a34a/rocket.png" alt="rocket" className="h-8 w-8" />
+                            </div>
                             <h3 className="text-xl font-bold mb-2">Proses Kilat</h3>
                             <p className="text-gray-600">Dari upload ke pengantaran hanya butuh beberapa jam. Tidak ada antri, tidak ada ribet.</p>
                         </div>
 
                         {/* Feature 3 */}
                         <div className="group bg-white p-8 rounded-2xl border border-gray-200 hover:border-green-300 hover:shadow-lg transition">
-                            <div className="text-5xl mb-4 group-hover:scale-110 transition transform">🎨</div>
+                            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-50 text-green-600 group-hover:scale-110 transition transform">
+                                <img src="https://img.icons8.com/ios-filled/48/16a34a/color-palette.png" alt="palette" className="h-8 w-8" />
+                            </div>
                             <h3 className="text-xl font-bold mb-2">Customize Penuh</h3>
                             <p className="text-gray-600">Pilih jenis kertas, warna, ukuran, hingga binding. Sesuai keinginan dan budget Anda.</p>
                         </div>
 
                         {/* Feature 4 */}
                         <div className="group bg-white p-8 rounded-2xl border border-gray-200 hover:border-green-300 hover:shadow-lg transition">
-                            <div className="text-5xl mb-4 group-hover:scale-110 transition transform">📱</div>
+                            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-50 text-green-600 group-hover:scale-110 transition transform">
+                                <img src="https://img.icons8.com/ios-filled/48/16a34a/smartphone.png" alt="phone" className="h-8 w-8" />
+                            </div>
                             <h3 className="text-xl font-bold mb-2">Dashboard Real-time</h3>
                             <p className="text-gray-600">Track pesanan Anda kapan saja. Status update otomatis dari print hingga pengantaran.</p>
                         </div>
 
                         {/* Feature 5 */}
                         <div className="group bg-white p-8 rounded-2xl border border-gray-200 hover:border-green-300 hover:shadow-lg transition">
-                            <div className="text-5xl mb-4 group-hover:scale-110 transition transform">💰</div>
+                            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-50 text-green-600 group-hover:scale-110 transition transform">
+                                <img src="https://img.icons8.com/ios-filled/48/16a34a/money-bag.png" alt="money" className="h-8 w-8" />
+                            </div>
                             <h3 className="text-xl font-bold mb-2">Harga Terjangkau</h3>
                             <p className="text-gray-600">Mulai dari Rp500/lembar. Tidak ada biaya tersembunyi, hitung transparan di awal.</p>
                         </div>
 
                         {/* Feature 6 */}
                         <div className="group bg-white p-8 rounded-2xl border border-gray-200 hover:border-green-300 hover:shadow-lg transition">
-                            <div className="text-5xl mb-4 group-hover:scale-110 transition transform">✅</div>
+                            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-50 text-green-600 group-hover:scale-110 transition transform">
+                                <img src="https://img.icons8.com/ios-filled/48/16a34a/check-all.png" alt="check" className="h-8 w-8" />
+                            </div>
                             <h3 className="text-xl font-bold mb-2">Garansi Kepuasan</h3>
                             <p className="text-gray-600">Tidak puas? Ganti gratis atau refund 100%. Kepuasan Anda adalah prioritas kami.</p>
                         </div>

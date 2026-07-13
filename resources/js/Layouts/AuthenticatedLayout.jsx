@@ -8,6 +8,8 @@ import { useState } from 'react';
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
 
+    const isAdmin = user && user.role === 'admin';
+
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
@@ -35,27 +37,49 @@ export default function AuthenticatedLayout({ header, children }) {
                         </div>
 
                         <div className="hidden items-center gap-2 sm:flex">
-                            <NavLink
-                                href={route('dashboard')}
-                                active={route().current('dashboard')}
-                            >
-                                Dashboard
-                            </NavLink>
-                            <NavLink
-                                href={route('history')}
-                                active={route().current('history')}
-                            >
-                                Riwayat
-                            </NavLink>
+                            {isAdmin ? (
+                                <>
+                                    <NavLink
+                                        href={route('admin.dashboard')}
+                                        active={route().current('admin.dashboard')}
+                                    >
+                                        Pusat Komando
+                                    </NavLink>
+                                </>
+                            ) : (
+                                <>
+                                    <NavLink
+                                        href={route('dashboard')}
+                                        active={route().current('dashboard')}
+                                    >
+                                        Dashboard
+                                    </NavLink>
+                                    <NavLink
+                                        href={route('history')}
+                                        active={route().current('history')}
+                                    >
+                                        Riwayat
+                                    </NavLink>
+                                </>
+                            )}
                         </div>
 
                         <div className="hidden items-center gap-3 sm:flex">
-                            <Link
-                                href={route('history')}
-                                className="rounded-full border border-green-100 bg-green-50 px-4 py-2 text-sm font-semibold text-green-700 transition hover:bg-green-100"
-                            >
-                                Lihat Riwayat
-                            </Link>
+                            {isAdmin ? (
+                                <Link
+                                    href={route('admin.dashboard')}
+                                    className="rounded-full border border-green-100 bg-green-50 px-4 py-2 text-sm font-semibold text-green-700 transition hover:bg-green-100"
+                                >
+                                    Kelola Pesanan
+                                </Link>
+                            ) : (
+                                <Link
+                                    href={route('history')}
+                                    className="rounded-full border border-green-100 bg-green-50 px-4 py-2 text-sm font-semibold text-green-700 transition hover:bg-green-100"
+                                >
+                                    Lihat Riwayat
+                                </Link>
+                            )}
                             <Dropdown>
                                 <Dropdown.Trigger>
                                     <span className="inline-flex items-center rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50">
@@ -136,25 +160,36 @@ export default function AuthenticatedLayout({ header, children }) {
                     </div>
                 </div>
 
-                <div
-                    className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
-                    }
-                >
+                        <div
+                            className={
+                                (showingNavigationDropdown ? 'block' : 'hidden') +
+                                ' sm:hidden'
+                            }
+                        >
                     <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('history')}
-                            active={route().current('history')}
-                        >
-                            Riwayat
-                        </ResponsiveNavLink>
+                        {isAdmin ? (
+                            <ResponsiveNavLink
+                                href={route('admin.dashboard')}
+                                active={route().current('admin.dashboard')}
+                            >
+                                Pusat Komando
+                            </ResponsiveNavLink>
+                        ) : (
+                            <>
+                                <ResponsiveNavLink
+                                    href={route('dashboard')}
+                                    active={route().current('dashboard')}
+                                >
+                                    Dashboard
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink
+                                    href={route('history')}
+                                    active={route().current('history')}
+                                >
+                                    Riwayat
+                                </ResponsiveNavLink>
+                            </>
+                        )}
                     </div>
 
                     <div className="border-t border-gray-200 pb-1 pt-4">
