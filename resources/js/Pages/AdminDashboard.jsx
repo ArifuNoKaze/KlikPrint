@@ -13,7 +13,55 @@ export default function AdminDashboard({ auth, orders }) {
         const ready = orders.filter(o => o.status === 'ready').length;
         const delivered = orders.filter(o => o.status === 'delivered').length;
         const revenue = orders.reduce((s, o) => s + (Number(o.total_price) || 0), 0);
-        return { total, pending, printing, ready, delivered, revenue };
+
+        const today = new Date();
+        const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        const endOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+
+        const revenueToday = orders.reduce((s, o) => {
+            const createdAt = new Date(o.created_at);
+            if (createdAt >= startOfToday && createdAt < endOfToday) {
+                return s + (Number(o.total_price) || 0);
+            }
+            return s;
+        }, 0);
+
+        const revenueMonth = orders.reduce((s, o) => {
+            const createdAt = new Date(o.created_at);
+            if (createdAt >= startOfMonth && createdAt < endOfToday) {
+                return s + (Number(o.total_price) || 0);
+            }
+            return s;
+        }, 0);
+
+        const weeklyOrders = Array.from({ length: 7 }, (_, index) => {
+            const date = new Date(today);
+            date.setDate(today.getDate() - (6 - index));
+            const label = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+            const count = orders.filter((o) => {
+                const createdAt = new Date(o.created_at);
+                return createdAt.toDateString() === date.toDateString();
+            }).length;
+            return { label, count };
+        });
+
+        const latestOrders = [...orders]
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            .slice(0, 5);
+
+        return {
+            total,
+            pending,
+            printing,
+            ready,
+            delivered,
+            revenue,
+            revenueToday,
+            revenueMonth,
+            weeklyOrders,
+            latestOrders,
+        };
     }, [orders]);
 
     const filteredOrders = useMemo(() => {
@@ -59,22 +107,87 @@ export default function AdminDashboard({ auth, orders }) {
                         <div className="mb-6">
                             <h3 className="text-2xl font-black text-gray-800 mb-4">Pusat Komando — Pesanan Masuk</h3>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
-                                <div className="bg-green-50 p-4 rounded-lg border border-green-100">
-                                    <div className="text-sm text-gray-600">Total Pesanan</div>
-                                    <div className="text-2xl font-black text-green-600">{stats.total}</div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+                                <div className="bg-gradient-to-br from-green-500 to-emerald-500 p-4 rounded-2xl text-white shadow-sm">
+                                    <div className="text-sm opacity-90">Total Order</div>
+                                    <div className="text-3xl font-black">{stats.total}</div>
                                 </div>
-                                <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
-                                    <div className="text-sm text-gray-600">Pending</div>
-                                    <div className="text-2xl font-black text-yellow-700">{stats.pending}</div>
+                                <div className="bg-gradient-to-br from-amber-400 to-yellow-500 p-4 rounded-2xl text-white shadow-sm">
+                                    <div className="text-sm opacity-90">Pending</div>
+                                    <div className="text-3xl font-black">{stats.pending}</div>
                                 </div>
-                                <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                                    <div className="text-sm text-gray-600">Sedang Cetak</div>
-                                    <div className="text-2xl font-black text-blue-700">{stats.printing}</div>
+                                <div className="bg-gradient-to-br from-blue-500 to-cyan-500 p-4 rounded-2xl text-white shadow-sm">
+                                    <div className="text-sm opacity-90">Dicetak</div>
+                                    <div className="text-3xl font-black">{stats.printing}</div>
                                 </div>
-                                <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                                    <div className="text-sm text-gray-600">Pendapatan</div>
-                                    <div className="text-2xl font-black text-gray-800">Rp {new Intl.NumberFormat('id-ID').format(stats.revenue)}</div>
+                                <div className="bg-gradient-to-br from-purple-500 to-violet-600 p-4 rounded-2xl text-white shadow-sm">
+                                    <div className="text-sm opacity-90">Diantar</div>
+                                    <div className="text-3xl font-black">{stats.ready}</div>
+                                </div>
+                                <div className="bg-gradient-to-br from-emerald-600 to-green-700 p-4 rounded-2xl text-white shadow-sm">
+                                    <div className="text-sm opacity-90">Selesai</div>
+                                    <div className="text-3xl font-black">{stats.delivered}</div>
+                                </div>
+                                <div className="bg-gradient-to-br from-slate-700 to-slate-800 p-4 rounded-2xl text-white shadow-sm">
+                                    <div className="text-sm opacity-90">Pendapatan Hari Ini</div>
+                                    <div className="text-2xl font-black">Rp {new Intl.NumberFormat('id-ID').format(stats.revenueToday)}</div>
+                                </div>
+                                <div className="bg-gradient-to-br from-rose-500 to-pink-600 p-4 rounded-2xl text-white shadow-sm">
+                                    <div className="text-sm opacity-90">Pendapatan Bulan Ini</div>
+                                    <div className="text-2xl font-black">Rp {new Intl.NumberFormat('id-ID').format(stats.revenueMonth)}</div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 xl:grid-cols-[1.4fr_0.8fr] gap-6 mb-6">
+                                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div>
+                                            <h4 className="font-bold text-gray-800">Order Mingguan</h4>
+                                            <p className="text-sm text-gray-500">Jumlah pesanan dalam 7 hari terakhir</p>
+                                        </div>
+                                        <span className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">Live</span>
+                                    </div>
+                                    <div className="h-52">
+                                        <svg viewBox="0 0 320 180" className="w-full h-full">
+                                            <line x1="20" y1="150" x2="300" y2="150" stroke="#d1d5db" strokeWidth="1" />
+                                            <line x1="20" y1="110" x2="300" y2="110" stroke="#e5e7eb" strokeWidth="1" />
+                                            <line x1="20" y1="70" x2="300" y2="70" stroke="#e5e7eb" strokeWidth="1" />
+                                            <line x1="20" y1="30" x2="300" y2="30" stroke="#e5e7eb" strokeWidth="1" />
+                                            {stats.weeklyOrders.map((item, index) => {
+                                                const max = Math.max(...stats.weeklyOrders.map((entry) => entry.count), 1);
+                                                const height = 100 * (item.count / max);
+                                                const x = 40 + index * 40;
+                                                const y = 150 - height;
+                                                return (
+                                                    <g key={item.label}>
+                                                        <rect x={x} y={y} width="22" height={height} rx="6" fill="#16a34a" />
+                                                        <text x={x + 11} y="168" textAnchor="middle" fontSize="10" fill="#6b7280">{item.label}</text>
+                                                    </g>
+                                                );
+                                            })}
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <div className="bg-gradient-to-br from-green-600 to-emerald-500 rounded-2xl p-5 text-white shadow-sm">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h4 className="font-bold">Pesanan Terbaru</h4>
+                                        <span className="text-xs bg-white/20 px-2 py-1 rounded-full">Update</span>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {stats.latestOrders.map((order) => (
+                                            <div key={order.id} className="bg-white/15 rounded-xl p-3">
+                                                <div className="flex items-center justify-between">
+                                                    <div>
+                                                        <div className="font-semibold">#{order.id}</div>
+                                                        <div className="text-xs opacity-90">{order.user?.name || 'User Terhapus'}</div>
+                                                    </div>
+                                                    <span className="text-xs font-semibold uppercase tracking-wide">{order.status}</span>
+                                                </div>
+                                                <div className="mt-2 text-sm font-semibold">Rp {new Intl.NumberFormat('id-ID').format(order.total_price)}</div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
 
@@ -133,7 +246,7 @@ export default function AdminDashboard({ auth, orders }) {
                                                     rel="noopener noreferrer"
                                                     className="inline-flex items-center px-3 py-1 bg-gray-900 text-white text-xs font-bold rounded hover:bg-gray-700 transition"
                                                 >
-                                                    <img src="https://img.icons8.com/ios-filled/16/ffffff/download.png" alt="download" className="mr-2" />
+                                                    {/* <img src="https://img.icons8.com/ios-filled/16/ffffff/download.png" alt="download" className="mr-2" /> */}
                                                     Unduh PDF
                                                 </a>
                                             </td>
