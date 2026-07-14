@@ -211,6 +211,7 @@ export default function AdminDashboard({ auth, orders }) {
                                     <tr className="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
                                         <th className="p-4 font-bold">ID / Tgl</th>
                                         <th className="p-4 font-bold">Pelanggan</th>
+                                        <th className="p-4 font-bold">Deskripsi</th>
                                         <th className="p-4 font-bold">Spesifikasi</th>
                                         <th className="p-4 font-bold">Slot Antar</th>
                                         <th className="p-4 font-bold">File PDF</th>
@@ -232,6 +233,14 @@ export default function AdminDashboard({ auth, orders }) {
                                                 <div className="font-bold text-gray-800">{order.user?.name || 'User Terhapus'}</div>
                                                 <div className="text-xs text-gray-500">Rp {new Intl.NumberFormat('id-ID').format(order.total_price)}</div>
                                             </td>
+
+                                                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {/* Gunakan operator ternary untuk menangani jika deskripsi kosong */}
+                                                {order.description ? order.description : (
+                                                    <span className="text-gray-300 italic">Tidak ada catatan</span>
+                                                )}
+                                            </td>
+                                            
                                             <td className="p-4">
                                                 <div className="text-sm font-semibold">{order.paper_size} - {order.print_type === 'bw' ? 'B&W' : 'Warna'}</div>
                                                 <div className="text-xs text-gray-500">{order.total_pages} Lembar</div>
